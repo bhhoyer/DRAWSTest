@@ -1,0 +1,9 @@
+DEBUG:root:This message should go to the log file
+INFO:root:So should this
+WARNING:root:And this, too
+DEBUG:root:This message should go to the log file
+INFO:root:So should this
+WARNING:root:And this, too
+2019-03-18 20:05:22,178 This message should go to the log file
+2019-03-18 20:05:22,179 So should this
+2019-03-18 20:05:22,179 And this, too
