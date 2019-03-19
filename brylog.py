@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import logging
+
 # set up logging to file
 logging.basicConfig(
      filename='drawstest.log',
@@ -17,4 +19,6 @@ console.setFormatter(formatter)
 # add the handler to the root logger
 logging.getLogger('').addHandler(console)
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
+
+logging.debug("My first message!")

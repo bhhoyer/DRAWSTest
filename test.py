@@ -8,13 +8,14 @@ revision = 0.0 #unreleased
 error = "Error Report:\n"
 
 print "NWDR DRAWS Test Program REV",revision
+time.sleep(1)
 print
 
-print "Check EEPROM"
+print "Check EEPROM "
 subprocess.call(["n7nix/bin/udrcver.sh"])
 print
 
-raw_input("Check ADC")
+raw_input("Check ADC ")
 sensors =  subprocess.check_output(["sensors"])
 slist =  sensors.splitlines( )
 print slist[3]
@@ -27,65 +28,38 @@ else:
     error = error + "Vin out of range (9-15V)\n"
 print
 
-raw_input("Check CODEC Control")
+raw_input("Check CODEC Control ")
+cerr = 0
 cml = subprocess.check_output(["amixer","-c","0","sset","CM_L to Left Mixer Negative Resistor","40 kOhm"])
 clist =  cml.splitlines( )
-print clist[3]
 if clist[3] != "  Item0: '40 kOhm'":
-    print "ERROR"
-    error = error + "CODEC 40k\n"
-else:
-    error = error + "CODEC 40k OK\n"
+    cerr = cerr + 1
 cml = subprocess.check_output(["amixer","-c","0","sset","CM_L to Left Mixer Negative Resistor","10 kOhm"])
 clist =  cml.splitlines( )
-print clist[3]
 if clist[3] != "  Item0: '10 kOhm'":
-    print "ERROR"
-    error = error + "CODEC 10k\n"
+    cerr = cerr + 1
+if cerr != 0:
+    print "CODEC Control Fail"
+    error = error + "CODEC Control Fail\n"
 else:
-    error = error + "CODEC 10k OK\n"
+    print "CODEC Control OK"
 print
 
 print "Check PTT LEDs"
-raw_input("Left PTT ON")
+raw_input("Left PTT ON ")
 subprocess.call(["gpio","-g","write","12","1"])
-raw_input("Right PTT ON")
+raw_input("Right PTT ON ")
 subprocess.call(["gpio","-g","write","12","0"])
 subprocess.call(["gpio","-g","write","23","1"])
 print
-raw_input("Check GPS, ctl-c to Quit")
+
+raw_input("Check GPS for time advancing and serial sentences\nctl-c to Quit ")
 subprocess.call(["gpio","-g","write","23","0"])
 
-gpsd = gps(mode=WATCH_ENABLE|WATCH_NEWSTYLE) 
-print 'Latitude\tLongitude\tTime UTC\t\t\tAltitude\tEPV\tEPT\tSpeed\tClimb' # '\t' = TAB to try and output the data in columns.
-   
 try:
-  
-    while True:
-        report = gpsd.next() #
-        if report['class'] == 'TPV':
-             
-            print  getattr(report,'lat',0.0),"\t",
-            print  getattr(report,'lon',0.0),"\t",
-            print  getattr(report,'time',''),"\t",
-            print  getattr(report,'alt','nan'),"\t\t",
-            print  getattr(report,'epv','nan'),"\t",
-            print  getattr(report,'ept','nan'),"\t",
-            print  getattr(report,'speed','nan'),"\t",
-            print  getattr(report,'climb','nan'),"\t"
- 
-        time.sleep(1.1) 
- 
+    subprocess.call(["gpsmon"])    
 except (KeyboardInterrupt, SystemExit): #when you press ctrl+c
-    print "Done.\nExiting."
-    print
-
-f = raw_input("Press f to Set Up To Flash ")
-if f == "f":
-	print "FLASH"
-    #subprocess.call(["sudo","cp","config.txt.flash","/boot/config.txt"])
-    #subprocess.call(["sudo","reboot","now"])
-print
+    time.sleep(1)
+    print "Exiting\n"
+    
 print error
-# /var/log/udr_install.log
-
