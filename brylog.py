@@ -19,6 +19,8 @@ console.setFormatter(formatter)
 # add the handler to the root logger
 logging.getLogger('').addHandler(console)
 
-#logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 logging.debug("My first message!")
+
+#git config --global core.editor "nano"
