@@ -1,0 +1,1 @@
+product_ver 0x0305      #0xAAFF ASSY Rev AA, FAB Rev FF
